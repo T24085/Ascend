@@ -57,6 +57,7 @@ const logoImage = new URL('../Website Logo 1.png', import.meta.url).href;
 
 function App() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
     const elements = document.querySelectorAll('[data-reveal]');
@@ -92,6 +93,29 @@ function App() {
     return () => observer.disconnect();
   }, []);
 
+  useEffect(() => {
+    const onScroll = () => {
+      setScrolled(window.scrollY > 16);
+    };
+
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  useEffect(() => {
+    if (!menuOpen) {
+      document.body.style.overflow = '';
+      return undefined;
+    }
+
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [menuOpen]);
+
   const brandMark = useMemo(
     () => (
       <span className="brand-mark" aria-hidden="true">
@@ -103,7 +127,7 @@ function App() {
 
   return (
     <div className="page-shell">
-      <header className="topbar">
+      <header className={`topbar ${scrolled ? 'topbar--scrolled' : ''} ${menuOpen ? 'topbar--menu-open' : ''}`}>
         <a className="brand" href="#top" aria-label="Ascend Performance home">
           {brandMark}
           <span className="brand-copy">
@@ -139,6 +163,7 @@ function App() {
           aria-expanded={menuOpen}
           aria-controls="mobile-menu"
           onClick={() => setMenuOpen((value) => !value)}
+          aria-label={menuOpen ? 'Close menu' : 'Open menu'}
         >
           <span />
           <span />
