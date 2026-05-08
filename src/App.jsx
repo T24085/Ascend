@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 const navItems = [
   { label: 'Shop', href: '#collections' },
@@ -58,6 +58,40 @@ const logoImage = new URL('../Website Logo 1.png', import.meta.url).href;
 function App() {
   const [menuOpen, setMenuOpen] = useState(false);
 
+  useEffect(() => {
+    const elements = document.querySelectorAll('[data-reveal]');
+
+    if (!elements.length) {
+      return undefined;
+    }
+
+    if (typeof IntersectionObserver === 'undefined') {
+      elements.forEach((element) => {
+        element.classList.add('is-visible');
+      });
+      return undefined;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      {
+        rootMargin: '0px 0px -8% 0px',
+        threshold: 0.12,
+      },
+    );
+
+    elements.forEach((element) => observer.observe(element));
+
+    return () => observer.disconnect();
+  }, []);
+
   const brandMark = useMemo(
     () => (
       <span className="brand-mark" aria-hidden="true">
@@ -114,16 +148,18 @@ function App() {
 
       <main>
         <section className="hero section" id="top" style={{ '--hero-image': `url(${heroImage})` }}>
-          <div className="hero__copy">
-            <p className="hero__kicker">DISCIPLINE TRANSFORMS.</p>
-            <h1 className="hero__title">
+          <div className="hero__copy" data-reveal style={{ '--reveal-delay': '80ms' }}>
+            <p className="hero__kicker" data-reveal style={{ '--reveal-delay': '120ms' }}>
+              DISCIPLINE TRANSFORMS.
+            </p>
+            <h1 className="hero__title" data-reveal style={{ '--reveal-delay': '180ms' }}>
               <span>TRAIN LIKE A</span>
               <span>WARRIOR</span>
             </h1>
-            <p className="hero__description">
+            <p className="hero__description" data-reveal style={{ '--reveal-delay': '260ms' }}>
               Performance streetwear built for those who push limits and break barriers.
             </p>
-            <div className="hero__actions">
+            <div className="hero__actions" data-reveal style={{ '--reveal-delay': '340ms' }}>
               <a className="button button--primary" href="#collections">
                 SHOP COLLECTION
               </a>
@@ -131,9 +167,14 @@ function App() {
                 EXPLORE TRAINING
               </a>
             </div>
-            <div className="hero__feature-grid">
-              {heroFeatures.map((feature) => (
-                <div key={feature.label} className="feature-chip">
+            <div className="hero__feature-grid" data-reveal style={{ '--reveal-delay': '420ms' }}>
+              {heroFeatures.map((feature, index) => (
+                <div
+                  key={feature.label}
+                  className="feature-chip"
+                  data-reveal
+                  style={{ '--reveal-delay': `${520 + index * 90}ms` }}
+                >
                   <span className="feature-chip__icon" aria-hidden="true">
                     <FeatureIcon kind={feature.icon} />
                   </span>
@@ -143,28 +184,35 @@ function App() {
             </div>
           </div>
 
-          <div className="hero__visual" aria-hidden="true">
+          <div className="hero__visual" aria-hidden="true" data-reveal style={{ '--reveal-delay': '180ms' }}>
             <div className="hero__edge-label">LEVEL UP EVERY DAY</div>
             <div className="hero__stat">100%</div>
           </div>
         </section>
 
         <section className="philosophy section" id="about" style={{ '--philosophy-image': `url(${philosophyImage})` }}>
-          <div className="philosophy__content">
-            <div className="section-label">OUR PHILOSOPHY</div>
+          <div className="philosophy__content" data-reveal style={{ '--reveal-delay': '120ms' }}>
+            <div className="section-label" data-reveal style={{ '--reveal-delay': '160ms' }}>
+              OUR PHILOSOPHY
+            </div>
             <h2>POWER IS EARNED. GROWTH IS A CHOICE.</h2>
-            <p>
+            <p data-reveal style={{ '--reveal-delay': '240ms' }}>
               Every rep. Every decision. Every day. We create gear for those who choose to level up
               mentally and physically.
             </p>
-            <a className="button button--dark" href="#journal">
+            <a className="button button--dark" href="#journal" data-reveal style={{ '--reveal-delay': '320ms' }}>
               OUR STORY
             </a>
           </div>
 
-          <div className="philosophy__points">
-            {philosophyPoints.map((point) => (
-              <div key={point.title} className="principle">
+          <div className="philosophy__points" data-reveal style={{ '--reveal-delay': '180ms' }}>
+            {philosophyPoints.map((point, index) => (
+              <div
+                key={point.title}
+                className="principle"
+                data-reveal
+                style={{ '--reveal-delay': `${220 + index * 110}ms` }}
+              >
                 <span className="principle__icon" aria-hidden="true">
                   <FeatureIcon kind={point.icon} />
                 </span>
@@ -178,21 +226,28 @@ function App() {
         </section>
 
         <section className="collection section" id="collections">
-          <div className="collection__lead">
-            <div className="section-label section-label--gold">FEATURED COLLECTION</div>
+          <div className="collection__lead" data-reveal style={{ '--reveal-delay': '80ms' }}>
+            <div className="section-label section-label--gold" data-reveal style={{ '--reveal-delay': '120ms' }}>
+              FEATURED COLLECTION
+            </div>
             <h2>NEW DROPS. NEXT LEVEL STYLE.</h2>
-            <a className="button button--primary button--compact" href="#contact">
+            <a className="button button--primary button--compact" href="#contact" data-reveal style={{ '--reveal-delay': '200ms' }}>
               VIEW ALL PRODUCTS
             </a>
           </div>
 
-          <div className="collection__rail">
+          <div className="collection__rail" data-reveal style={{ '--reveal-delay': '120ms' }}>
             <button className="rail-arrow" type="button" aria-label="Previous products">
               <ChevronLeft />
             </button>
             <div className="product-grid">
-              {productCards.map((product) => (
-                <article className={`product-card product-card--${product.tone}`} key={product.title}>
+              {productCards.map((product, index) => (
+                <article
+                  className={`product-card product-card--${product.tone}`}
+                  key={product.title}
+                  data-reveal
+                  style={{ '--reveal-delay': `${180 + index * 110}ms` }}
+                >
                   <div className="product-card__art">
                     <span className="product-card__logo" aria-hidden="true">
                       <span className="product-card__mark" />
@@ -211,22 +266,24 @@ function App() {
           </div>
         </section>
 
-        <section className="feature-strip section" id="journal">
+        <section className="feature-strip section" id="journal" data-reveal style={{ '--reveal-delay': '120ms' }}>
           <img src={featuresImage} alt="" />
         </section>
 
         <section className="community section" id="train">
-          <div className="community__left">
-            <div className="section-label">JOIN THE MOVEMENT</div>
+          <div className="community__left" data-reveal style={{ '--reveal-delay': '80ms' }}>
+            <div className="section-label" data-reveal style={{ '--reveal-delay': '120ms' }}>
+              JOIN THE MOVEMENT
+            </div>
             <h2>WE RISE TOGETHER.</h2>
-            <p>
+            <p data-reveal style={{ '--reveal-delay': '200ms' }}>
               More than a brand. We&apos;re a community of warriors who push, grow, and ascend to the
               highest version of themselves.
             </p>
-            <a className="button button--primary button--compact" href="#contact">
+            <a className="button button--primary button--compact" href="#contact" data-reveal style={{ '--reveal-delay': '260ms' }}>
               JOIN THE COMMUNITY
             </a>
-            <div className="social-row" aria-label="Social links">
+            <div className="social-row" aria-label="Social links" data-reveal style={{ '--reveal-delay': '340ms' }}>
               <SocialIcon label="Instagram">
                 <InstagramIcon />
               </SocialIcon>
@@ -242,22 +299,26 @@ function App() {
             </div>
           </div>
 
-          <div className="community__center">
+          <div className="community__center" data-reveal style={{ '--reveal-delay': '160ms' }}>
             <img src={lifestyleImage} alt="" />
           </div>
 
-          <div className="community__right">
-            <div className="section-label section-label--gold">LATEST DROP</div>
+          <div className="community__right" data-reveal style={{ '--reveal-delay': '220ms' }}>
+            <div className="section-label section-label--gold" data-reveal style={{ '--reveal-delay': '260ms' }}>
+              LATEST DROP
+            </div>
             <h2>ASCEND COLLECTION</h2>
-            <p>Tap into your potential. Unleash your inner warrior.</p>
-            <a className="button button--primary button--compact" href="#collections">
+            <p data-reveal style={{ '--reveal-delay': '340ms' }}>
+              Tap into your potential. Unleash your inner warrior.
+            </p>
+            <a className="button button--primary button--compact" href="#collections" data-reveal style={{ '--reveal-delay': '420ms' }}>
               SHOP NOW
             </a>
           </div>
         </section>
       </main>
 
-      <footer className="footer" id="contact">
+      <footer className="footer" id="contact" data-reveal style={{ '--reveal-delay': '80ms' }}>
         <a className="footer__brand" href="#top" aria-label="Ascend Performance home">
           <img src={logoImage} alt="" />
         </a>
